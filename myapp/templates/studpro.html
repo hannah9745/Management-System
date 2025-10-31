@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1 style="text-align: center;">PROFILE</h1>
+    <div class="container mb-5">
+        <h1 style="text-align: center;color: red;">Student Registration</h1>
+        <form action="/studupdate/{{stud.id}}" method="post">
+            {% csrf_token %}
+            <label for="">First_Name</label>
+            <input type="text" name="fname" class="form-control" value="{{user.first_Name}}"><br><br>
+            <label for="">Last_Name</label>
+            <input type="text" name="lname" class="form-control" value="{{user.last_Name}}"><br><br>
+            <label for="">Age</label>
+            <input type="text" name="age" class="form-control" value="{{stud.age}}"><br><br>
+            <label for="">Email</label>
+            <input type="text" name="email" class="form-control" value="{{stud.email}}"><br><br>
+            <label for="">Phone</label>
+            <input type="text" name="phone" class="form-control" value="{{stud.phone}}"><br><br>
+            <input type="button" class="form-control" value="Update">
+        
+        </form>
+        <a href="/logout">Logout</a>
+    </div>
+    
+</body>
+</html>
