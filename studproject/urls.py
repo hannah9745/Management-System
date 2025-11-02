@@ -30,7 +30,7 @@ urlpatterns = [
     path('stud_approve/<int:id>', views.student_approve),
     path('stud_del/<int:id>', views.stud_del),
     path('login/', views.loginData),
-    path('studedit/<int:id>', views.stud_edit, name='studedit'),
+    path('studedit/<int:id>', views.stud_edit,),
     path('studupdate/<int:ids>',views.stud_update),
     path('logout/',views.logout)
 ]

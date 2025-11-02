@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import authenticate,login as auth_login,logout
 from myapp.models import Department
@@ -70,11 +70,11 @@ def stud_del(request,id):
 #         data=Student1.objects.get(stud_id=userdata)
 #         return render(request,'studpro.html',{'stud':data,'user':userdata})
     
-def stud_edit(request, id):
-    if request.method == 'GET':
-        userdata = User.objects.get(id=id)
-        data = Student1.objects.get(stud_id=userdata)
-        return render(request, 'studpro.html', {'stud': data, 'user': userdata})
+# def stud_edit(request, id):
+#     if request.method == 'GET':
+#         userdata = User.objects.get(id=id)
+#         data = Student1.objects.get(stud_id=userdata)
+#         return render(request, 'studpro.html', {'stud': data, 'user': userdata})
     
 # def stud_update(request,ids):
 #     stud=Student1.objects.get(id=ids)
@@ -88,26 +88,67 @@ def stud_edit(request, id):
 #     user.save()
 #     stud.save()
 #     return redirect(stud_edit)
-def stud_update(request, ids):
+# def stud_update(request, ids):
+#     stud = Student1.objects.get(id=ids)
+#     sid = stud.stud_id
+#     user = User.objects.get(id=sid.id)
+
+#     if request.method == "POST":
+#         user.first_name = request.POST.get('fname', user.first_name)
+#         user.last_name = request.POST.get('lname', user.last_name)
+#         user.email = request.POST.get('email', user.email)
+#         stud.age = request.POST.get('age', stud.age)
+#         stud.phone = request.POST.get('phone', stud.phone)
+
+#         user.save()
+#         stud.save()
+#         return redirect('studedit', id=ids)   # ✅ FIXED
+
+#     return render(request, 'login.html', {'stud': stud, 'user': user})
+
+
+# def stud_edit(request):
+#     if request.method == 'GET':
+#         userdata = User.objects.get(id=request.session['studid'])
+#         print(userdata,"jhjdakjd")
+#         data = Student1.objects.get(stud_id=userdata)
+
+#         return render(request, 'studpro.html', {'stud': data, 'user': userdata})
+# def stud_update(request):
+#     user = User.objects.get(id=request.session['studid'])
+#     print(user,'afkjajf')
+#     stud = Student1.objects.get(stud_id_id=user)
+
+#     if request.method == "POST":
+#         user.first_name = request.POST.get('fname', user.first_name)
+#         user.last_name = request.POST.get('lname', user.last_name)
+#         user.email = request.POST.get('email', user.email)
+#         stud.age = request.POST.get('age', stud.age)
+#         stud.phone = request.POST.get('phone', stud.phone)
+#         user.save()
+#         stud.save()
+#         return redirect('studedit') 
+
+#     return render(request, 'login.html', {'stud': stud, 'user': user})
+ 
+def stud_edit(request, id):
+     if request.method == 'GET':
+        userdata = get_object_or_404(User, id=id)
+        data = get_object_or_404(Student1, stud_id=userdata)
+        return render(request, 'studpro.html', {'stud': data, 'user': userdata})
+     
+def stud_update(request,ids):
+    stud=Student1.objects.get(id=ids)
     stud = Student1.objects.get(id=ids)
-    sid = stud.stud_id
-    user = User.objects.get(id=sid.id)
-
-    if request.method == "POST":
-        user.first_name = request.POST.get('fname', user.first_name)
-        user.last_name = request.POST.get('lname', user.last_name)
-        user.email = request.POST.get('email', user.email)
-        stud.age = request.POST.get('age', stud.age)
-        stud.phone = request.POST.get('phone', stud.phone)
-
-        user.save()
-        stud.save()
-        return redirect('studedit', id=ids)   # ✅ FIXED
-
-    return render(request, 'login.html', {'stud': stud, 'user': user})
-
-
-
+    user = stud.stud_id
+    user.first_name = request.POST.get('fname', user.first_name)
+    user.last_name = request.POST.get('lname', user.last_name)
+    user.email = request.POST.get('email', user.email)
+    user.age = request.POST.get('age', stud.age)
+    user.phone = request.POST.get('phone', stud.phone)
+    user.save()
+    stud.save()
+    return HttpResponse("<script>window.alert('Student Updated Successfully!');window.location.href='/studentview/'</script>")
 def logout(request):
     return redirect(loginData)
  
