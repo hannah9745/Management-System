@@ -4,24 +4,31 @@ from django.contrib.auth import authenticate,login as auth_login,logout as auth_
 from myapp.models import Department
 from myapp.models import User
 from myapp.models import Student1
+from django.contrib import messages
 
 
 
 def loginData(request):
-    if request.method=='GET':
-
-        return render(request,'login.html')
+    if request.method == 'GET':
+        return render(request, 'login.html')
     else:
-        uname=request.POST['uname']
-        pswd=request.POST['pswd']
-        print(uname,pswd)
-        user=authenticate(request,username=uname,password=pswd)
-        if user is not None and user.usertype=='student' and user.is_active==True:
-            auth_login(request,user)
-            request.session['lid']=user.id
-            return render(request,'studpro.html')
+        uname = request.POST['uname']
+        pswd = request.POST['pswd']
+        user = authenticate(request, username=uname, password=pswd)
+
+        if user is not None:
+            if getattr(user, 'usertype', None) == 'student' and user.is_active:
+                auth_login(request, user)
+                request.session['lid'] = user.id
+                return redirect('studedit')
+            else:
+                messages.error(request, 'not active')
         else:
-            return render(request,'login.html')
+            messages.error(request, 'invalid cred')
+
+        return render(request, 'login.html')
+
+
 
 
 
@@ -42,25 +49,44 @@ def view_dep(request):
     return render(request,'dept.html',{'data':data})
 def home(request):
     return render(request,'home.html')
+
+
+
 def studentRegg(request):
-    if request.method=='GET':
-        # User.objects.filter(username=u).exists()
-        dep=Department.objects.all()
-        return render(request,'studentregs.html',{'dep':dep})
+    if request.method == 'GET':
+        dep = Department.objects.all()
+        return render(request, 'studentregs.html', {'dep': dep})
     else:
-        f=request.POST['fname']
-        l=request.POST['lname']
-        a=request.POST['age']
-        e=request.POST['email']
-        ph=request.POST['phone']
-        d=request.POST['depart']
-        u=request.POST['uname']
-        p=request.POST['pswd']
-        user_data=User.objects.create(first_name=f,last_name=l,email=e,username=u,password=p,usertype='student',is_active=False)
+        f = request.POST['fname']
+        l = request.POST['lname']
+        a = request.POST['age']
+        e = request.POST['email']
+        ph = request.POST['phone']
+        d = request.POST['depart']
+        u = request.POST['uname']
+        p = request.POST['pswd']
+
+        user_data = User(
+            first_name=f,
+            last_name=l,
+            email=e,
+            username=u,
+            usertype='student',
+            is_active=False
+        )
+        user_data.set_password(p)
         user_data.save()
-        stud_data= Student1.objects.create(age=a,phone=ph,department_id_id=d,stud_id_id=user_data.id)
+
+        stud_data = Student1.objects.create(
+            age=a,
+            phone=ph,
+            department_id_id=d,
+            stud_id_id=user_data.id
+        )
         stud_data.save()
-        return HttpResponse('Sucessfully created!')
+
+        return HttpResponse('Successfully created!')
+
 
 def student_view(request):
     data=Student1.objects.all()
@@ -82,12 +108,12 @@ def stud_del(request,id):
 
     
 def stud_edit(request):
+    if 'lid' not in request.session:
+            return redirect('/login')
     if request.method == 'GET':
-        userdata = User.objects.get(id=request.session['lid'])
-        print(userdata,"jhjdakjd")
-        data = Student1.objects.get(stud_id=userdata)
-
-        return render(request, 'studpro.html', {'stud': data, 'user': userdata})
+        student = Student1.objects.get(stud_id_id = request.session['lid'])
+        print("jfnkjv",student)
+        return render(request, 'studpro.html', {'stud': student})
     
 
 def stud_update(request):
