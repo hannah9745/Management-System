@@ -1,13 +1,30 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse
-from django.contrib.auth import authenticate,login as auth_login,logout
+from django.contrib.auth import authenticate,login as auth_login,logout as auth_logout
 from myapp.models import Department
 from myapp.models import User
 from myapp.models import Student1
 
 
 
-# Create your views here.
+def loginData(request):
+    if request.method=='GET':
+
+        return render(request,'login.html')
+    else:
+        uname=request.POST['uname']
+        pswd=request.POST['pswd']
+        print(uname,pswd)
+        user=authenticate(request,username=uname,password=pswd)
+        if user is not None and user.usertype=='student' and user.is_active==True:
+            auth_login(request,user)
+            request.session['studid']=user.id
+            return render(request,'studpro.html')
+        else:
+            return render(request,'login.html')
+
+
+
 
 
 def admin(request):
@@ -62,110 +79,44 @@ def stud_del(request,id):
     stud.delete()
     data.delete()
 
-# def stud_edit(request):
-#     if request.method=='GET':
-#         stud=request.session.get('studid')
-#         print('Session id: ',stud)
-#         userdata=User.objects.get(id=stud)
-#         data=Student1.objects.get(stud_id=userdata)
-#         return render(request,'studpro.html',{'stud':data,'user':userdata})
     
-# def stud_edit(request, id):
-#     if request.method == 'GET':
-#         userdata = User.objects.get(id=id)
-#         data = Student1.objects.get(stud_id=userdata)
-#         return render(request, 'studpro.html', {'stud': data, 'user': userdata})
-    
-# def stud_update(request,ids):
-#     stud=Student1.objects.get(id=ids)
-#     sid=stud.stud_id
-#     user=User.objects.get(id=sid.id)
-#     user.first_name=request.POST['fname']
-#     user.last_name=request.POST['lname']
-#     user.email=request.POST['email']
-#     stud.age=request.POST['age']
-#     stud.phone=request.POST['phone']
-#     user.save()
-#     stud.save()
-#     return redirect(stud_edit)
-# def stud_update(request, ids):
-#     stud = Student1.objects.get(id=ids)
-#     sid = stud.stud_id
-#     user = User.objects.get(id=sid.id)
+def stud_edit(request):
+    if request.method == 'GET':
+        userdata = User.objects.get(id=request.session['lid'])
+        print(userdata,"jhjdakjd")
+        data = Student1.objects.get(stud_id=userdata)
 
-#     if request.method == "POST":
-#         user.first_name = request.POST.get('fname', user.first_name)
-#         user.last_name = request.POST.get('lname', user.last_name)
-#         user.email = request.POST.get('email', user.email)
-#         stud.age = request.POST.get('age', stud.age)
-#         stud.phone = request.POST.get('phone', stud.phone)
-
-#         user.save()
-#         stud.save()
-#         return redirect('studedit', id=ids)   # ✅ FIXED
-
-#     return render(request, 'login.html', {'stud': stud, 'user': user})
-
-
-# def stud_edit(request):
-#     if request.method == 'GET':
-#         userdata = User.objects.get(id=request.session['studid'])
-#         print(userdata,"jhjdakjd")
-#         data = Student1.objects.get(stud_id=userdata)
-
-#         return render(request, 'studpro.html', {'stud': data, 'user': userdata})
-# def stud_update(request):
-#     user = User.objects.get(id=request.session['studid'])
-#     print(user,'afkjajf')
-#     stud = Student1.objects.get(stud_id_id=user)
-
-#     if request.method == "POST":
-#         user.first_name = request.POST.get('fname', user.first_name)
-#         user.last_name = request.POST.get('lname', user.last_name)
-#         user.email = request.POST.get('email', user.email)
-#         stud.age = request.POST.get('age', stud.age)
-#         stud.phone = request.POST.get('phone', stud.phone)
-#         user.save()
-#         stud.save()
-#         return redirect('studedit') 
-
-#     return render(request, 'login.html', {'stud': stud, 'user': user})
- 
-def stud_edit(request, id):
-     if request.method == 'GET':
-        userdata = get_object_or_404(User, id=id)
-        data = get_object_or_404(Student1, stud_id=userdata)
         return render(request, 'studpro.html', {'stud': data, 'user': userdata})
-     
-def stud_update(request,ids):
-    stud=Student1.objects.get(id=ids)
-    stud = Student1.objects.get(id=ids)
-    user = stud.stud_id
-    user.first_name = request.POST.get('fname', user.first_name)
-    user.last_name = request.POST.get('lname', user.last_name)
-    user.email = request.POST.get('email', user.email)
-    user.age = request.POST.get('age', stud.age)
-    user.phone = request.POST.get('phone', stud.phone)
-    user.save()
-    stud.save()
-    return HttpResponse("<script>window.alert('Student Updated Successfully!');window.location.href='/studentview/'</script>")
+    
+
+def stud_update(request):
+    user = User.objects.get(id=request.session['lid'])
+    print(user,'afkjajf')
+    stud = Student1.objects.get(stud_id_id=user)
+    
+    if request.method == "POST":
+        user.first_name = request.POST.get('fname', user.first_name)
+        user.last_name = request.POST.get('lname', user.last_name)
+        user.email = request.POST.get('email', user.email)
+        stud.age = request.POST.get('age', stud.age)
+        stud.phone = request.POST.get('phone', stud.phone)
+        user.save()
+        stud.save()
+        return redirect('studedit') 
+
+    return render(request, 'login.html', {'stud': stud, 'user': user})
+
+
+
 def logout(request):
-    return redirect(loginData)
+    if 'lid' in request.session:
+        del request.session['lid']
+    auth_logout(request)
+    return redirect('/login')
  
-def loginData(request):
-    if request.method=='GET':
-
-        return render(request,'login.html')
-    else:
-        uname=request.POST['uname']
-        pswd=request.POST['pswd']
-        print(uname,pswd)
-        user=authenticate(request,username=uname,password=pswd)
-        if user is not None and user.usertype=='student' and user.is_active==True:
-            auth_login(request,user)
-            request.session['studid']=user.id
-            return render(request,'studpro.html')
-        else:
-            return render(request,'login.html')
 
 
+
+
+
+ 
