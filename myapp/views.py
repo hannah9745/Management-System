@@ -18,7 +18,7 @@ def loginData(request):
         user=authenticate(request,username=uname,password=pswd)
         if user is not None and user.usertype=='student' and user.is_active==True:
             auth_login(request,user)
-            request.session['studid']=user.id
+            request.session['lid']=user.id
             return render(request,'studpro.html')
         else:
             return render(request,'login.html')
