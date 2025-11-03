@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<body>
+ <h1 style='text-align: center;color: red;'>Teacher Registration</h1>
+<form action="" method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label class="form-label">First Name:</label>
+        <input type="text" name="fname" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Last Name:</label>
+        <input type="text" name="lname" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Age:</label>
+        <input type="number" name="age" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Email:</label>
+        <input type="text" name="email" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Phone Number:</label>
+        <input type="text" name="phone" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Username:</label>
+        <input type="text" name="uname" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Password:</label>
+        <input type="password" name="pswd" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Select Department:</label>
+        <!-- <select name="depart" class="form-select" required>
+            {% for i in data %}
+                <option value="{{ i.id }}">{{ i.department_name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary w-100">Register</button> -->
+      <select name="depart" class="form-select">
+        {% for i in dep %}
+        <option value="{{i.id}}">{{i.department_name}}</option>
+        {% endfor %}
+    </select>
+    <input type="submit" class="form-control">
+    
+</form>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>
