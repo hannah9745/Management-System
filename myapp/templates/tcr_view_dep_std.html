@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ teacher.department_id.department_name }} - Students</title>
+</head>
+<body>
+    <h2>Department: {{ teacher.department_id.department_name }}</h2>
+
+    {% if students %}
+        <table border="1" cellpadding="8" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in students %}
+                <tr>
+                    <td>{{ s.id }}</td>
+                    <td>{{ s.stud_id.first_name }}</td>
+                    <td>{{ s.age }}</td>
+                    <td>{{ s.stud_id.email }}</td>
+                    <td>{{ s.phone }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No students found for this department.</p>
+    {% endif %}
+</body>
+</html>

@@ -8,34 +8,34 @@ from myapp.models import Teacher1
 from django.contrib import messages
 
 
-
 def loginData(request):
-    if request.method == 'GET':
-        return render(request, 'login.html')
-    else:
-        uname = request.POST['uname']
-        pswd = request.POST['pswd']
+    if request.method == 'POST':
+        uname = request.POST.get('uname')
+        pswd = request.POST.get('pswd')
+
         user = authenticate(request, username=uname, password=pswd)
+        print("AUTH USER:", user)
 
         if user is not None:
-            if getattr(user, 'usertype', None) == 'student' and user.is_active:
+            print("USERTYPE:", getattr(user, 'usertype', None))
+            usertype = getattr(user, 'usertype', None)
+
+            if usertype == 'student' and user.is_active:
                 auth_login(request, user)
                 request.session['lid'] = user.id
                 return redirect('studedit')
-            elif getattr(user, 'usertype', None) == 'teacher':
+
+            elif usertype == 'teacher':
                 auth_login(request, user)
-                request.session['teacher'] = user.id
-                return redirect('teach_profile')
-           
-           
+                request.session['lid'] = user.id
+                return redirect('teachpro')
 
             else:
-                messages.error(request, 'not active')
+                messages.error(request, 'User not active or invalid type')
         else:
-            messages.error(request, 'invalid cred')
+            messages.error(request, 'Invalid credentials')
 
-        return render(request, 'login.html')
-
+    return render(request, 'login.html')
 
 
 
@@ -161,7 +161,7 @@ def teacherreg(request):
             email=e,
             username=u,
             usertype='teacher',
-            is_active=False
+            is_active=True
         )
         user_data.set_password(p)
         user_data.save()
@@ -181,39 +181,35 @@ def teach_view(request):
     return render(request,'teacherv.html',{'data':data})
 
 def teach_profile(request):
-    teacher_id = request.session.get('teachid')  
+    teacher_id = request.session.get('lid')  
     if not teacher_id:
-        return render(request, 'error.html', {'error': 'No teacher ID found in session. Please log in again.'})
+        return redirect('/login')
+    else:
+        teacher = Teacher1.objects.get(teach_id_id=teacher_id)
+        return render(request, 'teacherpro.html', {'teacher': teacher})
 
-    try:
-        duser = User.objects.get(id=teacher_id)
-        teacher = Teacher1.objects.get(teach_id=User)
-        return render(request, 'teachpro.html', {'teacher': teacher, 'user': User})
-    except User.DoesNotExist:
-        return render(request, 'error.html', {'error': f'User with id {teacher_id} does not exist.'})
-    except Teacher1.DoesNotExist:
-        return render(request, 'error.html', {'error': f'Teacher profile not found for user id {teacher_id}.'})
-    
+  
+
 def dept_students_view(request):
-    teacher_id = request.session.get('teachid')
+    teacher_id = request.session.get('lid')
     if not teacher_id:
-        return render(request, 'error.html', {'error': 'No teacher ID in session.'})
-    teacher = Teacher1.objects.get(teach_id=teacher_id)
-    dept = teacher.department_id
-    students = Student1.objects.filter(department_id=dept, stud_id__usertype='student')
-    return render(request, 'dept_students.html', {'students': students, 'dept': dept})
+        return redirect('/login')
+    teacher = Teacher1.objects.get(teach_id_id=teacher_id)
+    students = Student1.objects.filter(department_id=teacher.department_id, stud_id__usertype='student')
+    return render(request, 'tcr_view_dep_std.html', {'students': students , 'teacher':teacher})
+
+
 
 
 def edit_teacher_profile(request):
-    teacher_id = request.session.get('teachid')
+    teacher_id = request.session.get('lid')
     if not teacher_id:
-        return redirect('teach_profile')
+        return redirect('/login')
 
     user = User.objects.get(id=teacher_id)
     teacher = Teacher1.objects.get(teach_id=user)
 
     if request.method == 'POST':
-        # Get form data
         user.first_name = request.POST.get('first_name', user.first_name)
         user.last_name = request.POST.get('last_name', user.last_name)
         user.email = request.POST.get('email', user.email)
@@ -221,9 +217,9 @@ def edit_teacher_profile(request):
         teacher.phone = request.POST.get('phone', teacher.phone)
         user.save()
         teacher.save()
-        return redirect('teach_profile')
+        return redirect('teachpro')
 
-    return render(request, 'edit_teacher_profile.html', {'teacher': teacher, 'user': user})
+
 
 def logout(request):
     if 'lid' in request.session:

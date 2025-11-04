@@ -19,7 +19,9 @@ urlpatterns = [
     path('studupdate/',views.stud_update),
     path('teacherview/', views.teach_view),
     path('teacherreg/', views.teacherreg),
-    path('teachpro/', views.teach_profile),
+    path('edit_teacher_profile/', views.edit_teacher_profile),
+    path('teachpro/', views.teach_profile , name='teachpro'),
+    path('dept_students_view/', views.dept_students_view),
     path('logout/',views.logout),
 
 ]
