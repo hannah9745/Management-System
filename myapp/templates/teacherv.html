@@ -1,42 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher List | School Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
+  <style>
+    body {
+      background: linear-gradient(135deg, #3b82f6, #06b6d4, #22d3ee);
+      background-size: 200% 200%;
+      animation: gradientShift 8s ease infinite;
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      min-height: 100vh;
+      padding: 30px 15px;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      max-width: 1000px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(18px);
+      border-radius: 20px;
+      padding: 40px 30px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+      color: #fff;
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      text-align: center;
+      color: #ffffff;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      margin-bottom: 25px;
+      font-weight: 700;
+    }
+
+    .table {
+      background-color: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .table thead th {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-weight: 600;
+      text-align: center;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .table tbody tr:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      transform: scale(1.01);
+      transition: all 0.2s ease;
+    }
+
+    .table td, .table th {
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .btn-back {
+      display: inline-block;
+      margin-top: 20px;
+      background: linear-gradient(90deg, #0072ff 0%, #00c6ff 100%);
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      color: #fff;
+      font-weight: 500;
+      transition: 0.3s;
+      text-decoration: none;
+    }
+
+    .btn-back:hover {
+      background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 25px 15px;
+      }
+      h1 {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
 </head>
-<body>
 
-    <div class="container">
-            <h1 style='text-align: center;color: red;'>Teacher List</h1>
-        <table class="table table-striped table-bordered table-hover"> <tr>
-            <th>First_Name</th>
-            <th>Last_Name</th>
+<body>
+  <div class="container">
+    <h1><i class="bi bi-person-badge-fill me-2"></i>Teacher List</h1>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
             <th>Age</th>
             <th>Email</th>
-            <th>Phone Number</th>
+            <th>Phone</th>
             <th>Department</th>
-            {% comment %} <th colspan='2' style=text-align:center >Action</th></tr> {% endcomment %}
-              {% comment %} <tr> {% endcomment %}
-      
-         
-            {% for i in data %}
-            <tr>
-                <td>{{i.teach_id.first_name}}</td>
-                <td>{{i.teach_id.last_name}}</td>
-                <td>{{i.age}}</td>
-                <td>{{i.teach_id.email}}</td>
-                <td>{{i.phone}}</td>
-                <td>{{i.department_id.department_name}}</td>
-                {% comment %} <td><a href="/stud_approve/{{i.id}}">Approve</a></td>
-              <td><a href="/stud_del/{{i.id}}" onclick="return confirm('Are you sure you want to delete this student?');">Delete</a></td> {% endcomment %}
-            </tr>
-            {% endfor %}
-        </table>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in data %}
+          <tr>
+            <td>{{i.teach_id.first_name}}</td>
+            <td>{{i.teach_id.last_name}}</td>
+            <td>{{i.age}}</td>
+            <td>{{i.teach_id.email}}</td>
+            <td>{{i.phone}}</td>
+            <td>{{i.department_id.department_name}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
 
+    <div class="text-center">
+      <a href="/adminhome/" class="btn-back">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+      </a>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

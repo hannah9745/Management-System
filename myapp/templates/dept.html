@@ -1,23 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Department List</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+      :root {
+          --primary-color: #0099cc;
+          --accent-color: #ff6f61;
+          --light-bg: #f4f8ff;
+          --card-shadow: 0 10px 32px rgba(0,150,200,0.10), 0 2px 8px rgba(0,0,0,0.03);
+      }
+      body {
+          background: var(--light-bg);
+          font-family: 'Segoe UI', Arial, sans-serif;
+          min-height: 100vh;
+      }
+      .dep-list-card {
+          max-width: 520px;
+          margin: 70px auto 0 auto;
+          padding: 36px 19px 28px 19px;
+          background: #fff;
+          border-radius: 22px;
+          box-shadow: var(--card-shadow);
+      }
+      .dep-list-header {
+          background: linear-gradient(90deg, var(--primary-color) 8%, var(--accent-color) 95%);
+          border-radius: 13px;
+          margin-bottom: 29px;
+          padding: 15px 0 10px 0;
+          box-shadow: 0 3px 12px #0099cc23;
+          text-align: center;
+      }
+      .dep-list-title {
+          color: #0077b6;
+          font-size: 1.5rem;
+          font-weight: 700;
+          letter-spacing: 2px;
+          font-family: 'Segoe UI', Arial, sans-serif;
+          text-shadow: 0 2px 9px #00b4d888, 0 1.5px 2px #fff;
+      }
+      .table {
+          border-radius: 14px;
+          overflow: hidden;
+          box-shadow: 0 2px 14px #0099cc11;
+          margin-bottom: 5px;
+      }
+      th {
+          background: #f4f8ff;
+          color: #0099cc;
+      }
+      td {
+          vertical-align: middle !important;
+          font-size: 1.04rem;
+      }
+      .btn-danger, .btn-success {
+          border-radius: 0.6rem !important;
+          font-weight: 600;
+          margin: 0 2px;
+      }
+      .btn-danger {
+          font-size: 1rem;
+          background: linear-gradient(90deg, #ff7058 48%, #e33543 100%);
+          border: none;
+      }
+      .btn-danger:hover {
+          background: #d11a2c;
+      }
+      .btn-success {
+          font-size: 1.06rem;
+          background: linear-gradient(90deg, #0099cc 8%, #00c6fb 100%);
+          border: none;
+      }
+      .btn-success:hover {
+          background: #0077b6;
+      }
+      @media (max-width: 600px) {
+          .dep-list-card {
+              padding: 10px 1vw 20px 1vw;
+          }
+          .dep-list-header {
+              font-size: 1.08rem;
+              padding: 11px 0;
+          }
+          .dep-list-title {
+              font-size: 1.09rem;
+          }
+          .table {
+              font-size: 0.96rem;
+          }
+      }
+  </style>
 </head>
 <body>
-     <table class="table table-bordered table-striped">
-        <tr>
-            <tb>Department Name</tb>
-        </tr>
-        {% for i in data %}
-        <tr>
-            <td>{{i.department_name}}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <div class="dep-list-card shadow">
+        <div class="dep-list-header">
+            <span class="dep-list-title">
+                <i class="bi bi-buildings"></i> Department List
+            </span>
+        </div>
+        <table class="table table-bordered table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Department Names</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for i in data %}
+            <tr>
+                <td>{{ i.department_name }}</td>
+                <td>
+                    <a href="{% url 'delete_department' i.id %}" class="btn btn-danger btn-sm"
+                    onclick="return confirm('Are you sure you want to delete this department?');">
+                        <i class="bi bi-trash"></i> Delete
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="text-center my-2">
+            <a href="{% url 'add_dept' %}" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Add New Department
+            </a>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

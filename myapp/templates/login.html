@@ -3,20 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Student Management System - Login</title>
+
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            box-sizing: border-box;
+        }
+
+        body{
+            background: #f4f7fb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container{
+            width: 900px;
+            height: 520px;
+            background: #fff;
+            display: flex;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .left-panel{
+            width: 45%;
+            padding: 40px;
+            background: linear-gradient(135deg, #4a4df7, #3b54d6);
+            color: #fff;
+        }
+
+        .left-panel h2{
+            font-size: 22px;
+        }
+
+        .left-panel h1{
+            margin: 15px 0;
+            font-size: 32px;
+        }
+
+        .left-panel p{
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .left-panel ul{
+            margin-top: 15px;
+        }
+
+        .left-panel ul li{
+            margin: 10px 0;
+            font-size: 15px;
+        }
+
+        .right-panel{
+            width: 55%;
+            padding: 40px;
+        }
+
+        .right-panel h2{
+            margin-bottom: 6px;
+            font-size: 26px;
+        }
+
+        .right-panel p{
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        form{
+            display: flex;
+            flex-direction: column;
+        }
+
+        label{
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input{
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        .row{
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .row a{
+            color: #2459ff;
+            text-decoration: none;
+        }
+
+        .login-btn{
+            background: #2459ff;
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .login-btn:hover{
+            background: #1a45d6;
+        }
+
+        .register{
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .register a{
+            color: #2459ff;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1 style="text-align: center;color: red;">LOGIN</h1>
 
-        <form action="" method="post">
-            {% csrf_token %}
-            <label for="">Username</label>
-            <input type="text" name="uname" class="form-control"><br>
-            <label for="">Password</label>
-            <input type="text" name="pswd" class="form-control"><br>
-            <input type="submit">
-        </form>
+<div class="container">
+
+    <div class="left-panel">
+        <h2>🎓 Student Management System</h2>
+        <h1>Welcome!</h1>
+        <p>
+            Sign in to stay connected — students can explore teacher profiles, and teachers can 
+            view student details effortlessly.
+        </p>
+
+       
     </div>
+
+    <div class="right-panel">
+        <h2>Sign In</h2>
+        <p>Enter your credentials to access your account</p>
+
+        <form>
+            <label>Username</label>
+            <input type="text" placeholder="Enter your username" required>
+
+            <label>Password</label>
+            <input type="password" placeholder="Enter your password" required>
+
+            <div class="row">
+                <label><input type="checkbox"> Remember me</label>
+                <a href="#">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+
+        <p class="register">Don't have an account? <a href="#">Register here</a></p>
+    </div>
+
+</div>
+
 </body>
 </html>

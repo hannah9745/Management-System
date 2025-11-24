@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import authenticate,login as auth_login,logout as auth_logout
 from myapp.models import Department
@@ -6,6 +6,8 @@ from myapp.models import User
 from myapp.models import Student1
 from myapp.models import Teacher1
 from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test,login_required
+from django.contrib.auth import logout as django_logout
 
 
 def loginData(request):
@@ -29,6 +31,11 @@ def loginData(request):
                 auth_login(request, user)
                 request.session['lid'] = user.id
                 return redirect('teachpro')
+            
+            # elif usertype == 'admin':
+            #     auth_login(request, user)
+            #     request.session['lid'] = user.id
+            #     return redirect('admin')
 
             else:
                 messages.error(request, 'User not active or invalid type')
@@ -38,7 +45,28 @@ def loginData(request):
     return render(request, 'login.html')
 
 
-
+def loginDataa(request):
+    if request.method == 'GET':
+        return render(request, 'login.html')
+    else:
+        uname = request.POST['uname']
+        pswd = request.POST['pswd']
+        user = authenticate(request, username=uname, password=pswd)
+        if user is not None and user.is_active:
+            auth_login(request, user)
+            if user.usertype == 'admin':
+                return redirect('addmin')
+            if user.usertype == 'teacher':
+                request.session['teachid'] = user.id
+                return redirect(teach_profile)
+            elif user.usertype == 'student':
+                request.session['studid'] = user.id
+                student = Student1.objects.get(stud_id=user)
+                return redirect('student_profile', id=student.id)
+            else:
+                return render(request, 'login.html', {'error': 'Unknown user type.'})
+        else:
+            return render(request, 'login.html', {'error': 'Login failed. Please check username or password.'})
 
 
 
@@ -58,7 +86,41 @@ def view_dep(request):
 def home(request):
     return render(request,'home.html')
 
+def is_admin(user):
+    return user.is_authenticated and user.usertype == 'admin'
 
+@user_passes_test(is_admin, login_url='loginDataa')
+def admin_dashboard(request):
+    return render(request, 'admin.html')
+@user_passes_test(is_admin, login_url='loginDataa')
+def add_department(request):
+    if request.method == 'POST':
+        dept_name = request.POST.get('dept')
+        if dept_name:
+            Department.objects.create(department_name=dept_name)
+            return redirect('view_dep')
+    return render(request, 'add_depart.html')
+
+@user_passes_test(is_admin, login_url='loginDataa')
+def view_dep(request):
+    depts = Department.objects.all()
+    return render(request, 'dept.html', {'data': depts})
+
+@user_passes_test(is_admin, login_url='loginDataa')
+def delete_department(request, id):
+    dept = get_object_or_404(Department, id=id)
+    dept.delete()
+    return redirect('view_dep')
+
+@user_passes_test(is_admin, login_url='loginDataa')
+def student_list(request):
+    students = Student1.objects.select_related('stud_id', 'department_id').all()
+    return render(request, 'studentview.html', {'students': students})
+
+@user_passes_test(is_admin, login_url='loginDataa')
+def teacher_list(request):
+    teachers = Teacher1.objects.select_related('teach_id', 'department_id').all()
+    return render(request, 'teacherview.html', {'teachers':teachers})
 
 def studentReg(request):
     if request.method == 'GET':
@@ -93,8 +155,34 @@ def studentReg(request):
         )
         stud_data.save()
 
-        return HttpResponse('Successfully created!')
+        messages.success(request, 'student registered succesfuly! please log in')
+        return redirect('loginDataa')
 
+# from django.contrib.auth.models import myapp.User
+# User.objects.filter(is_superuser=True)
+# user = User.objects.get(username='admin') 
+# user.delete()
+
+
+#  If you already have a user and just want to make them admin:
+# u = User.objects.get(username='')
+# u.usertype = 'admin'
+# u.set_password('newpassword')  # optional: to reset password
+# u.save()
+
+# from myapp.models import User  
+# admin = User.objects.create_user(
+#     username='adminn',          
+#     password='123',    
+#     usertype='admin',
+#     first_name='Admin',
+#     last_name='User',
+#     email='adminn@example.com'
+
+# )
+
+# username: adminn
+# password: admin123
 
 def student_view(request):
     data=Student1.objects.all()
@@ -113,7 +201,7 @@ def stud_del(request,id):
     data=user.stud_id
     stud.delete()
     data.delete()
-
+    return redirect('studentview')
     
 def stud_edit(request):
     if 'lid' not in request.session:
@@ -175,6 +263,8 @@ def teacherreg(request):
         teacher_data.save()
 
         return HttpResponse(' Teacher successfully registered!')
+    
+
 
 def teach_view(request):
     data=Teacher1.objects.all()
@@ -221,11 +311,14 @@ def edit_teacher_profile(request):
 
 
 
+# def logout(request):
+#     if 'lid' in request.session:
+#         del request.session['lid']
+#     auth_logout(request)
+#     return redirect('/login')
 def logout(request):
-    if 'lid' in request.session:
-        del request.session['lid']
-    auth_logout(request)
-    return redirect('/login')
+    django_logout(request)        
+    return redirect('loginDataa')
  
 
 
@@ -233,3 +326,5 @@ def logout(request):
 
 
  
+# from myapp.models import Student1
+# Student1.objects.values_list('id', flat=True)

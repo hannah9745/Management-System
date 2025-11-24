@@ -4,16 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ teacher.department_id.department_name }} - Students</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #f0f4f8;
+            font-family: 'Segoe UI', sans-serif;
+            padding: 30px;
+        }
+
+        .container-card {
+            max-width: 1000px;
+            margin: auto;
+            background: #fff;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-title {
+            text-align: center;
+            font-size: 1.8rem;
+            color: #0077b6;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+
+        table {
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        thead th {
+            background: linear-gradient(90deg, #0077b6 0%, #00c6fb 100%);
+            color: #fff;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        tbody tr:hover {
+            background-color: #e0f7ff;
+            transition: 0.2s;
+        }
+
+        td {
+            text-align: center;
+            vertical-align: middle !important;
+        }
+
+        @media (max-width: 768px) {
+            .container-card { padding: 20px 15px; }
+            .header-title { font-size: 1.4rem; }
+        }
+    </style>
 </head>
 <body>
-    <h2>Department: {{ teacher.department_id.department_name }}</h2>
+
+<div class="container-card">
+    <h2 class="header-title">
+        <i class="bi bi-building"></i> {{ teacher.department_id.department_name }} Department - Students
+    </h2>
 
     {% if students %}
-        <table border="1" cellpadding="8" cellspacing="0">
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered align-middle">
             <thead>
                 <tr>
-                    <th>Student ID</th>
-                    <th>Name</th>
+                    <th>ID</th>
+                    <th>First Name</th>
                     <th>Age</th>
                     <th>Email</th>
                     <th>Phone</th>
@@ -31,8 +92,12 @@
                 {% endfor %}
             </tbody>
         </table>
+    </div>
     {% else %}
-        <p>No students found for this department.</p>
+        <p class="text-center text-secondary">No students found for this department.</p>
     {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
