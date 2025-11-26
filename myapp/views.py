@@ -32,10 +32,10 @@ def loginData(request):
                 request.session['lid'] = user.id
                 return redirect('teachpro')
             
-            # elif usertype == 'admin':
-            #     auth_login(request, user)
-            #     request.session['lid'] = user.id
-            #     return redirect('admin')
+            elif usertype == 'admin':
+                auth_login(request, user)
+                request.session['lid'] = user.id
+                return redirect('admin')
 
             else:
                 messages.error(request, 'User not active or invalid type')
@@ -43,30 +43,6 @@ def loginData(request):
             messages.error(request, 'Invalid credentials')
 
     return render(request, 'login.html')
-
-
-def loginDataa(request):
-    if request.method == 'GET':
-        return render(request, 'login.html')
-    else:
-        uname = request.POST['uname']
-        pswd = request.POST['pswd']
-        user = authenticate(request, username=uname, password=pswd)
-        if user is not None and user.is_active:
-            auth_login(request, user)
-            if user.usertype == 'admin':
-                return redirect('addmin')
-            if user.usertype == 'teacher':
-                request.session['teachid'] = user.id
-                return redirect(teach_profile)
-            elif user.usertype == 'student':
-                request.session['studid'] = user.id
-                student = Student1.objects.get(stud_id=user)
-                return redirect('student_profile', id=student.id)
-            else:
-                return render(request, 'login.html', {'error': 'Unknown user type.'})
-        else:
-            return render(request, 'login.html', {'error': 'Login failed. Please check username or password.'})
 
 
 

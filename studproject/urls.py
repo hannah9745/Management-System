@@ -34,7 +34,6 @@ urlpatterns = [
     path('admindash/', views.admin_dashboard),
     path('delete_department/<int:id>', views.delete_department, name='deletedepart'),
     path('logout/',views.logout),
-    path('loginn/',views.loginDataa, name="loginDataa"),
 
 
 ]
